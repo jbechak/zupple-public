@@ -1,15 +1,15 @@
 package com.zupple.utilities.crossword;
 
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Puzzle;
-import com.zupple.puzzle.Word;
-import com.zupple.puzzle.WordList;
-
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Puzzle;
+import com.zupple.puzzleParts.Word;
+import com.zupple.puzzleParts.WordList;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CrosswordPuzzle extends Puzzle {
+public class CrosswordPuzzle extends Puzzle implements Cloneable {
     private Map<String, String> wordClues;
     private List<String> wordCollection = new ArrayList<>();
     private WordList wordList = new WordList();
@@ -36,6 +36,24 @@ public class CrosswordPuzzle extends Puzzle {
         this.wordCount = wordCount;
     }
 
+    @Override
+    public CrosswordPuzzle clone() {
+        try {
+            CrosswordPuzzle cloned = (CrosswordPuzzle) super.clone();
+            cloned.wordClues = new HashMap<>(this.wordClues);
+            cloned.wordCollection = new ArrayList<>(this.wordCollection);
+            cloned.wordList = this.wordList.clone();
+            cloned.finalWordList = this.finalWordList.clone();
+            cloned.sortedWordList = this.sortedWordList != null ? this.sortedWordList.clone() : null;
+            cloned.grid = this.grid.clone();
+            cloned.downClueList = (this.downClueList != null) ? new ArrayList<>(this.downClueList) : null;
+            cloned.acrossClueList = (this.acrossClueList != null) ? new ArrayList<>(this.acrossClueList) : null;
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("Cloning failed", e);
+        }
+    }
+
     public WordList getSortedWordList() {
         return sortedWordList;
     }
@@ -58,14 +76,6 @@ public class CrosswordPuzzle extends Puzzle {
 
     public void setWordClues(Map<String, String> wordClues) {
         this.wordClues = wordClues;
-    }
-
-    public void populateWordCollection() {
-        wordCollection.clear();
-
-        for (String key : wordClues.keySet()) {
-            wordCollection.add(key);
-        }
     }
 
     public void populateWordList() {
@@ -135,7 +145,6 @@ public class CrosswordPuzzle extends Puzzle {
     public List<String> getDownClueList() {
         return downClueList;
     }
-
     public List<String> getAcrossClueList() {
         return acrossClueList;
     }

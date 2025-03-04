@@ -1,8 +1,8 @@
 package com.zupple.utilities.spaceFinder;
 
 import com.zupple.utilities.crossword.PlacementResults;
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Word;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Word;
 
 import java.util.Random;
 
@@ -47,7 +47,7 @@ public class SpaceFinder {
     public void addWord(Word word, Grid grid, int x, int y) {}
 
 
-    boolean wordSpaceOccupied(int wordStartY, int testX, Word word, Grid grid) {
+    boolean isWordSpaceOccupied(int wordStartY, int testX, Word word, Grid grid) {
         for (int testY = wordStartY; testY < wordStartY + word.length(); testY++) { //check each letter in word for this 1 word space
             String currentLetterInWord = word.getChar(testY - wordStartY);
             if (hasLetter(testX, testY, currentLetterInWord, grid)) {

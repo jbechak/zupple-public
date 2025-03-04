@@ -55,31 +55,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-//                .authorizeRequests()
-//                    .antMatchers("/public/**").permitAll() // Allow all access to public endpoints
-//                    .antMatchers("/private/**").authenticated() // Require authentication for private endpoints
-//                    .anyRequest().permitAll() // Allow other requests without authentication
-//                .and()
-//                .formLogin()  // Optional: enables form login
-//                .permitAll()  // Allows everyone to access the login page
-//                .and()
-//                .httpBasic();  // Optional: enables HTTP Basic Authentication
+            // we don't need CSRF because our token is invulnerable
+            .csrf().disable()
 
-                // we don't need CSRF because our token is invulnerable
-                .csrf().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .accessDeniedHandler(jwtAccessDeniedHandler)
 
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+            // create no session
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-                // create no session
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and()
-                .apply(securityConfigurerAdapter());
-
+            .and()
+            .apply(securityConfigurerAdapter());
     }
 
     private JWTConfigurer securityConfigurerAdapter() {

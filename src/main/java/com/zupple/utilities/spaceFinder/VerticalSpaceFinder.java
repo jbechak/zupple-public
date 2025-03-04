@@ -1,7 +1,7 @@
 package com.zupple.utilities.spaceFinder;
 
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Word;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Word;
 
 import java.util.Random;
 
@@ -21,7 +21,7 @@ public class VerticalSpaceFinder extends SpaceFinder {
             for (int j = 0; j < maxStartY; j++) {    //this loop checks through one column
                 boolean blockTaken = false;
                 int wordStartY = setWordStart(j, firstY, maxStartY);
-                blockTaken = wordSpaceOccupied(wordStartY, testX, word, grid);
+                blockTaken = isWordSpaceOccupied(wordStartY, testX, word, grid);
 
                 if (!blockTaken) { //space for word found!!!
                     return foundLocation(testX, wordStartY);
@@ -44,6 +44,4 @@ public class VerticalSpaceFinder extends SpaceFinder {
             grid.setBlock(x, i, word.getChar(j));
         }
     }
-
-
 }

@@ -10,6 +10,7 @@ public class WordSearchSaveDto {
     private String title;
     private String description = "";
     private String difficulty;
+    private Boolean showDifficulty;
     private int width;
     private int height;
     private String genre = "";
@@ -17,6 +18,8 @@ public class WordSearchSaveDto {
     private String gridString;
     private String htmlPath;
     private List<String> wordCollection = new ArrayList<>();
+    private List<String> usedWords = new ArrayList<>();
+    private List<String> unusedWords = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -53,6 +56,13 @@ public class WordSearchSaveDto {
         this.difficulty = difficulty;
     }
 
+    public Boolean getShowDifficulty() {
+        return showDifficulty;
+    }
+    public void setShowDifficulty(Boolean showDifficulty) {
+        this.showDifficulty = showDifficulty;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -84,17 +94,24 @@ public class WordSearchSaveDto {
     public String getGridString() { return gridString; }
     public void setGridString(String gridString) { this.gridString = gridString; }
 
-    public String getHtmlPath() {
-        return htmlPath;
-    }
-    public void setHtmlPath(String htmlPath) {
-        this.htmlPath = htmlPath;
-    }
-
     public List<String> getWordCollection() {
         return wordCollection;
     }
     public void setWordCollection(List<String> wordCollection) {
         this.wordCollection = wordCollection;
+    }
+
+    public List<String> getUnusedWords() {
+        return unusedWords;
+    }
+    public void setUnusedWords(List<String> unusedWords) {
+        this.unusedWords = unusedWords;
+    }
+
+    public List<String> getUsedWords() {
+        return usedWords;
+    }
+    public void setUsedWords(List<String> usedWords) {
+        this.usedWords = usedWords;
     }
 }

@@ -1,8 +1,8 @@
 package com.zupple.utilities.spaceFinder;
 
 import com.zupple.utilities.crossword.PlacementResults;
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Word;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Word;
 
 import java.util.Random;
 
@@ -21,7 +21,7 @@ public class HorizontalCrosswordSpaceFinder extends SpaceFinder {
         while (inBounds) { //this loops through every column
             for (int i = 0; i < word.length(); i++) {    //this loop checks through one column
                 if (word.getChar(i).equals(grid.getBlock(x, y))) {
-                    if (!wordSpaceOccupied(x - i, y, word, grid)) {
+                    if (!isWordSpaceOccupied(x - i, y, word, grid)) {
                         PlacementResults results = new PlacementResults(true, x - i, y);
                         return results;
                     }
@@ -43,7 +43,7 @@ public class HorizontalCrosswordSpaceFinder extends SpaceFinder {
     }
 
     @Override
-    public boolean wordSpaceOccupied(int wordStartX, int testY, Word word, Grid grid) {
+    public boolean isWordSpaceOccupied(int wordStartX, int testY, Word word, Grid grid) {
         if (!beforeAndAfterWordClean(wordStartX, testY, word, grid)) {
             return true;
         }

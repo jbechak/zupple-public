@@ -23,19 +23,3 @@ public class Column {
         blockColumn.get(index).setValue(value);
     }
 }
-
-
-//    public void printColumn() {
-//        for (Block block : blockColumn) {
-//            System.out.println(block.getValue());
-//        }
-//    }
-//
-//    public void updateColumn(List<Column> columnList, Row row) {
-//        int rowIndex = row.getRowIndex();
-//        for (int i = 0; i < 9; i++) {
-//            Column column = columnList.get(i);
-//            int valueFromRow = row.getNum(i);
-//            column.setBlockValue(i, valueFromRow);
-//        }
-//    }

@@ -1,10 +1,9 @@
 package com.zupple.utilities.wordsearch;
 
 import com.zupple.model.WordSearchModel;
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Puzzle;
-import com.zupple.puzzle.Word;
-import com.zupple.puzzle.WordList;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Word;
+import com.zupple.puzzleParts.WordList;
 import com.zupple.utilities.spaceFinder.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,20 +13,11 @@ public class BuildingTools {
     private SpaceFinder spaceFinder = new SpaceFinder();
     private VerticalSpaceFinder verticalSpaceFinder = new VerticalSpaceFinder();
     private HorizontalSpaceFinder horizontalSpaceFinder = new HorizontalSpaceFinder();
-    private DiagonalSpaceFinder diagonalSpaceFinder = new DiagonalSpaceFinder();
+    private DiagonalDownSpaceFinder diagonalSpaceFinder = new DiagonalDownSpaceFinder();
     private DiagonalUpSpaceFinder diagonalUpSpaceFinder = new DiagonalUpSpaceFinder();
 
-    public boolean isDuplicate(String newWord, Puzzle puzzle) {
-        for (String word : puzzle.getWordCollection()) {
-            if (newWord.equalsIgnoreCase(word)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void createWordSearch(WordSearchModel wordSearch) {
-        Grid grid = new Grid(wordSearch.getWidth(), wordSearch.getHeight());
+        var grid = new Grid(wordSearch.getWidth(), wordSearch.getHeight());
         wordSearch.populateWordList(wordSearch.getWordCollection());
         wordSearch.setWordCount(wordSearch.getWordList().size());
         generateWordSearch(wordSearch, grid);
@@ -53,16 +43,18 @@ public class BuildingTools {
             if (!usedWords.contains(word))
                 unusedWords.add(word);
         }
-        wordSearch.setWordCollection(usedWords);
+
+        wordSearch.setUsedWords(usedWords);
         wordSearch.setUnusedWords(unusedWords);
     }
 
     public void generateWordSearch(WordSearchModel puzzle, Grid grid) {
-        WordList wordList = new WordList();
+        var wordList = new WordList();
+        boolean isAllWordsInPuzzle = false;
         for (int j = 0; j < 5; j++) {
             for (int i = 0; i < puzzle.getWordList().size(); i++) {
                 boolean success = false;
-                Word currentWord = blanklessWord(puzzle, i);
+                var currentWord = getBlanklessWord(puzzle, i);
                 if (!puzzle.getWordList().getWord(i).isInGrid()) {
                     if (puzzle.getWordDirections() == 1) {
                         success = easyWord(currentWord, grid);
@@ -79,38 +71,37 @@ public class BuildingTools {
                     puzzle.getWordList().getWord(i).setInGrid(true);
                     wordList.add(puzzle.getWordList().getWord(i));
                 }
+
+                isAllWordsInPuzzle = puzzle.getWordList().size() == wordList.size();
+                if (isAllWordsInPuzzle) break;
             }
+            if (isAllWordsInPuzzle) break;
         }
         puzzle.setWordList(wordList);
     }
 
-    private Word blanklessWord(WordSearchModel puzzle, int index) {
-        Word newWord =new Word(puzzle.getWordList().getWord(index).getLetterArray());
+    private Word getBlanklessWord(WordSearchModel puzzle, int index) {
+        var newWord = new Word(puzzle.getWordList().getWord(index).getLetterArray());
         newWord.withoutSpace();
         return newWord;
     }
 
     private boolean easyWord(Word word, Grid grid) {
-        Random generate = new Random();
+        var generate = new Random();
         int direction = generate.nextInt(2);
         return placeEasy(word, grid, direction);
     }
 
     private boolean mediumWord(Word word, Grid grid) {
-        Random generate = new Random();
+        var generate = new Random();
         int direction = generate.nextInt(4);
         return placeEasy(word, grid, direction)
             ? true
             : placeMedium(word, grid, direction);
-//        if (placeEasy(word, grid, direction)) {
-//            return true;
-//        } else {
-//            return placeMedium(word, grid, direction);
-//        }
     }
 
     private boolean hardWord(Word word, Grid grid) {
-        Random generate = new Random();
+        var generate = new Random();
         int flip = generate.nextInt(2);
         if (flip == 1) {
             word = word.flip();
@@ -119,12 +110,6 @@ public class BuildingTools {
         return placeEasy(word, grid, direction)
             ? true
             : placeMedium(word, grid, direction);
-
-//        if (placeEasy(word, grid, direction)) {
-//            return true;
-//        } else {
-//            return placeMedium(word, grid, direction);
-//        }
     }
 
     private boolean placeEasy(Word word, Grid grid, int direction) {

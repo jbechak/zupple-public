@@ -1,8 +1,8 @@
 package com.zupple.utilities.spaceFinder;
 
 import com.zupple.utilities.crossword.PlacementResults;
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Word;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Word;
 
 import java.util.Random;
 
@@ -20,7 +20,7 @@ public class VerticalCrosswordSpaceFinder extends SpaceFinder {
         while (inBounds) { //this loops through every column
             for (int i = 0; i < word.length(); i++) {    //this loop checks through one column
                 if (word.getChar(i).equals(grid.getBlock(x, y))) {
-                    if (!wordSpaceOccupied(y - i, x, word, grid)) {
+                    if (!isWordSpaceOccupied(y - i, x, word, grid)) {
                         PlacementResults results = new PlacementResults(true, x, y - i);
                         return results;
                     }
@@ -35,7 +35,7 @@ public class VerticalCrosswordSpaceFinder extends SpaceFinder {
     }
 
     @Override
-    boolean wordSpaceOccupied(int wordStartY, int testX, Word word, Grid grid) {
+    boolean isWordSpaceOccupied(int wordStartY, int testX, Word word, Grid grid) {
         if (!beforeAndAfterWordClean(testX, wordStartY, word, grid)) {
             return true;
         }
@@ -72,9 +72,6 @@ public class VerticalCrosswordSpaceFinder extends SpaceFinder {
     public void assignInitialValues(Grid grid, Word word, int[] xy) {
         firstX = xy[0];
         firstY = xy[1];
-//        maxStartY = grid.getHeight() - word.length();
-//        firstX = generate.nextInt(grid.getWidth());
-//        firstY = generate.nextInt(maxStartY);
     }
 
     @Override

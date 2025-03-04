@@ -1,8 +1,8 @@
 package com.zupple.model;
 
-import com.zupple.Instructions;
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.WordList;
+import com.zupple.utilities.wordsearch.Instructions;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.WordList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,17 +15,17 @@ public class WordSearchModel {
     private int width;
     private int height;
     private List<String> wordCollection = new ArrayList<>();
+    private List<String> usedWords = new ArrayList<>();
     private List<String> unusedWords = new ArrayList<>();
     private WordList wordList = new WordList();
     private int wordDirections = 1;
     private int wordCount;
     private String difficulty;
+    private Boolean showDifficulty;
     private String genre = "";
     private String instructions = "";
     private String description = "";
     private String creator = "";
-    private String gridPath;
-    private String htmlPath;
 
     private final int FULL_WIDTH = 81;
 
@@ -54,12 +54,8 @@ public class WordSearchModel {
         this.difficulty = difficulty;
     }
 
-    public String getHtmlPath() {
-        return htmlPath;
-    }
-    public void setHtmlPath(String htmlPath) {
-        this.htmlPath = htmlPath;
-    }
+    public Boolean getShowDifficulty() { return showDifficulty; }
+    public void setShowDifficulty(Boolean showDifficulty) { this.showDifficulty = showDifficulty; }
 
     public int getWordDirections() {
         return wordDirections;
@@ -85,6 +81,13 @@ public class WordSearchModel {
         this.unusedWords = unusedWords;
     }
 
+    public List<String> getUsedWords() {
+        return usedWords;
+    }
+    public void setUsedWords(List<String> usedWords) {
+        this.usedWords = usedWords;
+    }
+
     public void populateWordList(List<String> wordCollection) {
         wordList.populateFromStringList(wordCollection);
     }
@@ -102,9 +105,6 @@ public class WordSearchModel {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
     public void setDescription(String description) {
         this.description = description;
     }
@@ -128,7 +128,7 @@ public class WordSearchModel {
     private int getCredits(Grid grid) {
         int credits = 0;
         credits += grid.remainingSpaces() / 50;
-        credits += wordDirections - 1;
+        credits += wordDirections * 2 - 2;
         credits += (wordCount - 1) / 10;
         return credits;
     }
@@ -167,16 +167,7 @@ public class WordSearchModel {
     }
 
     public void createInstructions() {
-        Instructions instructMaker = new Instructions();
-        if (wordDirections == 1) {
-            this.instructions = instructMaker.getINSTRUCTIONS_1();
-        }
-        if (wordDirections == 2) {
-            this.instructions = instructMaker.getINSTRUCTIONS_2();
-        }
-        if (wordDirections == 3) {
-            this.instructions = instructMaker.getINSTRUCTIONS_3();
-        }
+        this.instructions = new Instructions().getStandard(wordDirections);
     }
 
     public void setInstructions(String instructions) {

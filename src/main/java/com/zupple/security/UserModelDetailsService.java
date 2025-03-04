@@ -1,7 +1,7 @@
 package com.zupple.security;
 
 
-import com.zupple.dao.UserDao;
+import com.zupple.repository.IUserRepository;
 import com.zupple.model.UserModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,9 @@ public class UserModelDetailsService implements UserDetailsService {
 
     private final Logger log = LoggerFactory.getLogger(UserModelDetailsService.class);
 
-    private final UserDao userDao;
+    private final IUserRepository userDao;
 
-    public UserModelDetailsService(UserDao userDao) {
+    public UserModelDetailsService(IUserRepository userDao) {
         this.userDao = userDao;
     }
 
@@ -47,4 +47,3 @@ public class UserModelDetailsService implements UserDetailsService {
                 grantedAuthorities);
     }
 }
-

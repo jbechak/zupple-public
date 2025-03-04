@@ -5,7 +5,6 @@ drop table if exists crossword_wordclue;
 drop table if exists wordsearch;
 drop table if exists crossword;
 drop table if exists sudoku;
-drop table if exists account;
 drop table if exists users;
 
 CREATE TABLE users (
@@ -20,12 +19,6 @@ CREATE TABLE users (
 	CONSTRAINT pk_user_id PRIMARY KEY (user_id),
 	CONSTRAINT uq_username UNIQUE (username)
 );
-
---create table account (
---    user_id serial primary key,
---    username varchar(50) not null,
---    password_hash varchar(300) not null
---);
 
 create table sudoku (
     id serial primary key,
@@ -57,6 +50,7 @@ create table wordsearch (
 	title varchar(60),
 	description varchar(500),
 	difficulty varchar(20),
+    show_difficulty boolean,
 	genre varchar(20),
     instructions varchar(500),
 	width int not null check (width < 100),
@@ -70,37 +64,18 @@ create table crossword_wordclue (
     clue_direction varchar(8),
     clue_number integer,
     word varchar(30),
-    clue varchar(200)
+    clue varchar(200),
+    is_active boolean
 );
 
 create table wordsearch_word (
     word_id serial primary key,
     wordsearch_id integer references wordsearch (id),
+    is_active boolean,
     word varchar(30)
 );
 
---insert into account (username, password_hash)
---values ('Justin', 'password');
---
---insert into account (username, password_hash)
---values ('Melodi', 'password');
---
---insert into account (username, password_hash)
---values ('Canly', 'password');
-
-insert into users (username, password_hash, role)
-values ('Justin', 'password', 'admin');
-
-insert into users (username, password_hash, role)
-values ('Melodi', 'password', 'default');
-
-insert into users (username, password_hash, role)
-values ('Canly', 'password', 'default');
-
 INSERT INTO users (username,password_hash,role) VALUES ('user','$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC','ROLE_USER');
 INSERT INTO users (username,password_hash,role) VALUES ('admin','$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC','ROLE_ADMIN');
-
-
-
 
 commit;

@@ -1,6 +1,6 @@
 package com.zupple.utilities.crossword;
 
-import com.zupple.puzzle.Word;
+import com.zupple.puzzleParts.Word;
 import java.util.Comparator;
 
 public class SortByStartingX implements Comparator<Word> {

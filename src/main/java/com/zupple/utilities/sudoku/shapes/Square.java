@@ -20,7 +20,6 @@ public class Square {
     public int getBlockValue(int index) {
         return blockSquare.get(index).getValue();
     }
-
     public void setBlockValue(int index, int value) {
         blockSquare.get(index).setValue(value);
     }
@@ -28,17 +27,7 @@ public class Square {
     public int getX() {
         return x;
     }
-
     public int getY() {
         return y;
     }
-
 }
-
-
-//    public void printSquare() {
-//        for (int i = 0; i < 7; i += 3) {
-//            System.out.println(getBlockValue(i) + " " + getBlockValue(i + 1) + " " + getBlockValue(i + 2));
-//        }
-//        System.out.println();
-//    }

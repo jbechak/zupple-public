@@ -17,12 +17,7 @@ public class Board {
         return rowList.get(index);
     }
 
-    public Board() {
-    }
-
-    public List<TripleRow> getBoard() {
-        return board;
-    }
+    public Board() {}
 
     public void putAllBlocksInList() {
         for (int i = 0; i < 9; i++) {
@@ -63,26 +58,12 @@ public class Board {
         }
     }
 
-    public void printIndexOfAllBlocks() {
-        for (Block block : blockList) {
-            System.out.print(block.getBoardIndex() + " ");
-        }
-    }
-
     public void addRow(Row row) {
         rowList.add(row);
     }
 
     public void addTripleRow(TripleRow tripleRow) {
         board.add(tripleRow);
-    }
-
-    public void setTripleRow(int index, TripleRow tripleRow) {
-        board.set(index, tripleRow);
-    }
-
-    public TripleRow getTripleRow(int index) {
-        return board.get(index);
     }
 
     @Override
@@ -92,25 +73,6 @@ public class Board {
             boardString += rowList.get(i).toString();
         }
         return boardString;
-    }
-
-    public String doubleHorizontalLine() {
-        String line = "";
-        for (int i = 0; i < 9; i++) {
-            line += "====";
-            if (i == 8) {
-                line += "=====\n";
-            }
-        }
-        return line;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public String levelString() {
-        return "Level " + level + " Puzzle";
     }
 
     public void setLevel(int level) {
@@ -159,7 +121,6 @@ public class Board {
             update1Square(currentSquare, currentRow);
         }
     }
-
 
     public void update1Square(Square square, int currentRow) {
         int rowToUpdate = currentRow % 3;

@@ -194,22 +194,4 @@ public class Row {
         }
         return rowString;
     }
-
-    public String toHtml() {
-        String rowString = "";
-
-        for (int i = 0; i < 9; i++) {
-            String numToAdd = "" + getNum(i);
-            if (numToAdd.equals("0")) {
-                numToAdd = " ";
-            }
-            if (i == 2 || i == 5) {
-                rowString += "<td class =\"text-center third-cell\">" + numToAdd + "</td>\n";
-            } else {
-                rowString += "<td class =\"text-center\">" + numToAdd + "</td>\n";
-            }
-        }
-        rowString += "</tr>\n";
-        return rowString;
-    }
 }

@@ -10,6 +10,8 @@ public class CrosswordModel {
     private int width;
     private int height;
     private Map<String, String> wordClues;
+    private Map<String, String> usedWordClues;
+    private Map<String, String> unusedWordClues;
     private String gridString;
     private List<String> downClueList;
     private List<String> acrossClueList;
@@ -119,5 +121,19 @@ public class CrosswordModel {
     }
     public void setWordClues(Map<String, String> wordClues) {
         this.wordClues = wordClues;
+    }
+
+    public Map<String, String> getUsedWordClues() {
+        return usedWordClues;
+    }
+    public void setUsedWordClues(Map<String, String> usedWordClues) {
+        this.usedWordClues = usedWordClues;
+    }
+
+    public Map<String, String> getUnusedWordClues() {
+        return unusedWordClues;
+    }
+    public void setUnusedWordClues(Map<String, String> unusedWordClues) {
+        this.unusedWordClues = unusedWordClues;
     }
 }

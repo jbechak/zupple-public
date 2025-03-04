@@ -22,14 +22,7 @@ public class BlockGenerator {
         return gridString;
     }
 
-    public void createBoard() {
-        initialBoardSetup();
-        populateRows();
-        board.putAllBlocksInList();
-    }
-
     public void initialBoardSetup() {
-        //Row.populateListOf9();
         putRowsInBoard();
         putTripleRowsInBoard();
 
@@ -62,18 +55,15 @@ public class BlockGenerator {
 
         do {
             do {
-//                success = create0to2();
                 success = createRows(1, 2);
             }
             while (!success);
 
             do {
-//                success = create3to5();
                 success = createRows(3, 5);
             } while (!success);
 
             for (int i = 0; i < 100; i++) {
-//                success = create6to7();
                 success = createRows(6, 7);
                 if (success) {
                     break;
@@ -93,37 +83,4 @@ public class BlockGenerator {
         }
         return true;
     }
-
-//    public boolean create0to2() {
-//        for (int i = 1; i <= 2; i++) {
-//            if (!board.getRow(i).shuffleRowUntilGood(board)) {
-//                return false;
-//            }
-//            board.updateColumns(i);
-//            board.updateSquares(i);
-//        }
-//        return true;
-//    }
-//
-//    public boolean create3to5() {
-//        for (int i = 3; i <= 5; i++) {
-//            if (!board.getRow(i).shuffleRowUntilGood(board)) {
-//                return false;
-//            }
-//            board.updateColumns(i);
-//            board.updateSquares(i);
-//        }
-//        return true;
-//    }
-//
-//    public boolean create6to7() {
-//        for (int i = 6; i <= 7; i++) {
-//            if (!board.getRow(i).shuffleRowUntilGood(board)) {
-//                return false;
-//            }
-//            board.updateColumns(i);
-//            board.updateSquares(i);
-//        }
-//        return true;
-//    }
 }

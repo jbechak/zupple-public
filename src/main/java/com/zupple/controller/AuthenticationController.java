@@ -3,7 +3,6 @@ package com.zupple.controller;
 import javax.validation.Valid;
 
 import com.zupple.model.*;
-//import com.techelevator.model.*;
 import com.zupple.dto.LoginDto;
 import com.zupple.dto.LoginResponseDto;
 import com.zupple.dto.RegisterUserDto;
@@ -18,7 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.zupple.dao.UserDao;
+import com.zupple.repository.IUserRepository;
 import com.zupple.security.jwt.JWTFilter;
 import com.zupple.security.jwt.TokenProvider;
 
@@ -28,12 +27,12 @@ public class AuthenticationController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private UserDao userDao;
+    private IUserRepository userRepository;
 
-    public AuthenticationController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, UserDao userDao) {
+    public AuthenticationController(TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, IUserRepository userRepository) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.userDao = userDao;
+        this.userRepository = userRepository;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -46,7 +45,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication, false);
         
-        UserModel user = userDao.findByUsername(loginDto.getUsername());
+        UserModel user = userRepository.findByUsername(loginDto.getUsername());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -57,12 +56,10 @@ public class AuthenticationController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(@Valid @RequestBody RegisterUserDto newUser) {
         try {
-            UserModel user = userDao.findByUsername(newUser.getUsername());
+            UserModel user = userRepository.findByUsername(newUser.getUsername());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Already Exists.");
         } catch (UsernameNotFoundException e) {
-            userDao.create(newUser.getUsername(),newUser.getPassword(), newUser.getEmail());
+            userRepository.create(newUser.getUsername(),newUser.getPassword(), newUser.getEmail());
         }
     }
-
 }
-

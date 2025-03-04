@@ -1,50 +1,27 @@
 package com.zupple.utilities.crossword;
 
-import com.zupple.Instructions;
 import com.zupple.model.CrosswordModel;
-import com.zupple.puzzle.Grid;
-import com.zupple.puzzle.Puzzle;
-import com.zupple.puzzle.Word;
-import com.zupple.puzzle.WordList;
+import com.zupple.puzzleParts.Grid;
+import com.zupple.puzzleParts.Word;
+import com.zupple.puzzleParts.WordList;
 import com.zupple.utilities.spaceFinder.HorizontalCrosswordSpaceFinder;
 import com.zupple.utilities.spaceFinder.SpaceFinder;
 import com.zupple.utilities.spaceFinder.VerticalCrosswordSpaceFinder;
-
-
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class CrosswordBuildingTools {
     private SpaceFinder spaceFinder = new SpaceFinder();
     private HorizontalCrosswordSpaceFinder horizontalSpaceFinder = new HorizontalCrosswordSpaceFinder();
     private VerticalCrosswordSpaceFinder verticalSpaceFinder = new VerticalCrosswordSpaceFinder();
 
-    public boolean isDuplicate(String newWord, Puzzle puzzle) {
-        for (String word : puzzle.getWordCollection()) {
-            if (newWord.equalsIgnoreCase(word)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void setInstructions(Puzzle puzzle) {
-        Instructions instructions = new Instructions();
-        if (puzzle.getWordDirections() == 1) {
-            puzzle.setInstructions(instructions.getINSTRUCTIONS_1());
-        }
-        if (puzzle.getWordDirections() == 2) {
-            puzzle.setInstructions(instructions.getINSTRUCTIONS_2());
-        }
-        if (puzzle.getWordDirections() == 3) {
-            puzzle.setInstructions(instructions.getINSTRUCTIONS_3());
-        }
-    }
-
     public CrosswordModel createGrid(CrosswordPuzzle puzzle) {
         puzzle.setWordCount(puzzle.getWordList().size());
-        CrosswordPuzzle thisPuzzle = buildCrosswordPuzzle(puzzle);
+        var thisPuzzle = buildCrosswordPuzzle(puzzle);
 
-        CrosswordModel crossword = new CrosswordModel(puzzle.getTitle());
+        var crossword = new CrosswordModel(puzzle.getTitle());
+        updateWordClues(crossword, thisPuzzle);
         crossword.setWidth(thisPuzzle.getGrid().getWidth());
         crossword.setHeight(thisPuzzle.getGrid().getHeight());
         crossword.setWordClues(thisPuzzle.getWordClues());
@@ -57,32 +34,70 @@ public class CrosswordBuildingTools {
 
     public CrosswordPuzzle buildCrosswordPuzzle(CrosswordPuzzle puzzle) {
         List<CrosswordPuzzle> partialPuzzleList = new ArrayList<>();
-        Map<Integer, CrosswordPuzzle> puzzleMap = new LinkedHashMap<>();
-        CrosswordPuzzle thisPuzzle = new CrosswordPuzzle(puzzle.getTitle());
-        WordList sortedWordList;
+        var bestPuzzle = new CrosswordPuzzle(puzzle.getTitle());
         int smallestArea = 10000;
-        for (int i = 0; i < 40; i++) {
-            CrosswordPuzzle newPuzzle = createNewTrialPuzzle(puzzle);
+        for (int i = 0; i < puzzle.getWordList().size() + 3; i++) {
+            var newPuzzle = createNewTrialPuzzle(puzzle);
 
             if (newPuzzle.getFinalWordList().size() == newPuzzle.getWordList().size()) {
                 if (newPuzzle.getArea() < smallestArea) {
                     smallestArea = newPuzzle.getArea();
-
-                    thisPuzzle = newPuzzle;
-                    thisPuzzle.getFinalWordList().sortWordList();
-                    thisPuzzle.setSortedWordList(thisPuzzle.getFinalWordList());
-                    thisPuzzle.createClueLists();
+                    bestPuzzle = newPuzzle.clone();
                 }
             } else {
                 partialPuzzleList.add(newPuzzle);
             }
         }
-        return thisPuzzle;
+        if (bestPuzzle.getFinalWordList().size() < 1) {
+            bestPuzzle = getBestPartialPuzzle(partialPuzzleList);
+        }
+        handleClueLists(bestPuzzle);
+        return bestPuzzle;
+    }
+
+    private CrosswordPuzzle getBestPartialPuzzle(List<CrosswordPuzzle> puzzleList) {
+        int maxWordCount = puzzleList.stream()
+            .map(puzzle -> puzzle.getWordCount())
+            .max((p1, p2) -> p1 - p2)
+            .orElse(-1);
+
+        var bestPuzzles = puzzleList.stream()
+            .filter(puzzle -> puzzle.getFinalWordList().size() == maxWordCount)
+            .collect(Collectors.toList());
+
+        return Collections.min(bestPuzzles, Comparator.comparingInt(CrosswordPuzzle::getArea));
+    }
+
+    private void handleClueLists(CrosswordPuzzle puzzle) {
+        puzzle.getFinalWordList().sortWordList();
+        puzzle.setSortedWordList(puzzle.getFinalWordList());
+        puzzle.createClueLists();
+    }
+
+    private void updateWordClues(CrosswordModel crosswordModel, CrosswordPuzzle puzzle) {
+        Map<String, String> usedWordClues = puzzle.getWordClues().entrySet().stream()
+            .filter(entry -> puzzle.getFinalWordList().getWords().stream()
+                .anyMatch(word -> word.toString().equals(entry.getKey()) &&
+                    word.getClue().equals(entry.getValue())))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map<String, String> unusedWordClues = puzzle.getWordClues().entrySet().stream()
+            .filter(entry -> !usedWordClues.containsKey(entry.getKey()) ||
+                !usedWordClues.get(entry.getKey()).equals(entry.getValue()))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        crosswordModel.setUsedWordClues(usedWordClues);
+        crosswordModel.setUnusedWordClues(unusedWordClues);
     }
 
     private CrosswordPuzzle createNewTrialPuzzle(CrosswordPuzzle puzzle) {
-        CrosswordPuzzle newPuzzle = new CrosswordPuzzle(puzzle.getTitle(), puzzle.getWordClues(),
-                puzzle.getWordCollection(), puzzle.getWordList(), puzzle.getWordCount());
+        var newPuzzle = new CrosswordPuzzle(
+            puzzle.getTitle(),
+            puzzle.getWordClues(),
+            puzzle.getWordCollection(),
+            puzzle.getWordList(),
+            puzzle.getWordCount()
+        );
         newPuzzle.getWordList().resetInGrid();
         generateCrosswordPuzzle(newPuzzle);
         newPuzzle.setWordCount(newPuzzle.getFinalWordList().size());
@@ -98,7 +113,7 @@ public class CrosswordBuildingTools {
         int newWidth = rightX - leftX;
         int newHeight = bottomY - topY;
 
-        Grid grid = new Grid(newWidth, newHeight);
+        var grid = new Grid(newWidth, newHeight);
 
         for (int y = topY, newY = 0; y < bottomY; y++, newY++){
             for (int x = leftX, newX = 0; x < rightX; x++, newX++) {
@@ -115,92 +130,79 @@ public class CrosswordBuildingTools {
     }
 
     private int topRow(Grid grid) {
-        for (int y = 0; y < grid.getHeight(); y++) {
-            for (int x = 0; x < grid.getWidth(); x++) {
-                if (!spaceFinder.isBlank(x, y, grid)) {
-                    return y;
-                }
-            }
-        }
-        return 0;
+        int width = grid.getWidth();
+
+        return IntStream.range(0, grid.getHeight())
+            .filter(y -> IntStream.range(0, width).anyMatch(x -> !spaceFinder.isBlank(x, y, grid)))
+            .findFirst()
+            .orElse(0);
     }
 
     private int leftColumn(Grid grid) {
-        for (int x = 0; x < grid.getWidth(); x++) {
-            for (int y = 0; y < grid.getHeight(); y++) {
-                if (!spaceFinder.isBlank(x, y, grid)) {
-                    return x;
-                }
-            }
-        }
-        return 0;
+        int height = grid.getHeight();
+
+        return IntStream.range(0, grid.getWidth())
+            .filter(x -> IntStream.range(0, height).anyMatch(y -> !spaceFinder.isBlank(x, y, grid)))
+            .findFirst()
+            .orElse(0);
     }
 
     private int bottomRow(Grid grid, int topY) {
-        for (int y = topY; y < grid.getHeight(); y++) {
-            boolean rowIsBlank = true;
-            for (int x = 0; x < grid.getWidth(); x++) {
-                if (!spaceFinder.isBlank(x, y, grid)) {
-                    rowIsBlank = false;
-                    break;
-                }
-            }
-            if (rowIsBlank) {
-                return y;
-            }
-        }
-        return grid.getHeight();
+        int width = grid.getWidth();
+        int height = grid.getHeight();
+
+        return IntStream.range(topY, height)
+            .filter(y -> IntStream.range(0, width).allMatch(x -> spaceFinder.isBlank(x, y, grid)))
+            .findFirst()
+            .orElse(height);
     }
 
     private int rightColumn(Grid grid, int leftX) {
-        for (int x = leftX; x < grid.getWidth(); x++) {
-            boolean rowIsBlank = true;
-            for (int y = 0; y < grid.getHeight(); y++) {
-                if (!spaceFinder.isBlank(x, y, grid)) {
-                    rowIsBlank = false;
-                    break;
-                }
-            }
-            if (rowIsBlank) {
-                return x;
-            }
-        }
-        return grid.getWidth();
+        int width = grid.getWidth();
+        int height = grid.getHeight();
+
+        return IntStream.range(leftX, width)
+            .filter(x -> IntStream.range(0, height).allMatch(y -> spaceFinder.isBlank(x, y, grid)))
+            .findFirst()
+            .orElse(width);
     }
 
     public void generateCrosswordPuzzle(CrosswordPuzzle puzzle) {
         Collections.shuffle(puzzle.getWordList().getWords());
 
-        PlacementResults results = setFirstWord(blanklessWord(puzzle, 0), puzzle.getGrid());
+        PlacementResults results = setFirstWord(getBlanklessWord(puzzle, 0), puzzle.getGrid());
         logWordEntry(results, puzzle, 0, false);
         int[] xy = {results.getStartingX(), results.getStartingY()};
         boolean goingDown = true;
 
-        for (int j = 0; j < 30; j++) {
+        for (int j = 0; j < puzzle.getWordList().size(); j++) {
+            if (!puzzle.getWordList().getWords().stream().anyMatch(w -> !w.isInGrid())) {
+                break;
+            }
             for (int i = 1; i < puzzle.getWordList().size(); i++) {
-                Word currentWord = blanklessWord(puzzle, i);
-                recursivelySetWord(puzzle, currentWord, i, goingDown, xy);
+                var currentWord = getBlanklessWord(puzzle, i);
+                if (!puzzle.getWordList().getWord(i).isInGrid()) {
+                    setNextWord(puzzle, currentWord, i, goingDown, xy);
+                }
                 uncheckAllWords(puzzle.getWordList());
                 goingDown = !goingDown;
             }
         }
     }
 
-    private void recursivelySetWord(CrosswordPuzzle puzzle, Word currentWord, int i, boolean goingDown, int[] xy) {
-        if (!puzzle.getWordList().getWord(i).isInGrid()) {
-            PlacementResults results = placeWord(currentWord, puzzle.getGrid(), goingDown, xy);
+    private void setNextWord(CrosswordPuzzle puzzle, Word currentWord, int i, boolean goingDown, int[] xy) {
+        PlacementResults results = placeWord(currentWord, puzzle.getGrid(), goingDown, xy);
 
-            if (results != null) {
-                puzzle = logWordEntry(results, puzzle, i, goingDown);
-                xy = setXY(results.getStartingX(), results.getStartingY());
+        if (results != null) {
+            logWordEntry(results, puzzle, i, goingDown);
+            xy = setXY(results.getStartingX(), results.getStartingY());
 
-            } else {
-                for (Word word : puzzle.getWordList().getWords()) {
-                    if (!word.equals(puzzle.getWordList().getWord(i)) && !word.isChecked() && !puzzle.getWordList().getWord(i).isInGrid()) {
-                        xy = setXY(word.getStartingX(), word.getStartingY());
-                        word.setChecked(true);
-                        recursivelySetWord(puzzle, currentWord, i, goingDown, xy);
-                    }
+        } else {
+            for (Word word : puzzle.getWordList().getWords()) {
+                if (!word.equals(puzzle.getWordList().getWord(i)) && !word.isChecked() && !puzzle.getWordList().getWord(i).isInGrid()) {
+                    xy = setXY(word.getStartingX(), word.getStartingY());
+                    word.setChecked(true);
+                    setNextWord(puzzle, currentWord, i, goingDown, xy);
                 }
             }
         }
@@ -229,7 +231,7 @@ public class CrosswordBuildingTools {
         return puzzle;
     }
 
-    private Word blanklessWord(CrosswordPuzzle puzzle, int index) {
+    private Word getBlanklessWord(CrosswordPuzzle puzzle, int index) {
         Word newWord =new Word(puzzle.getWordList().getWord(index).getLetterArray());
         newWord.withoutSpace();
         return newWord;

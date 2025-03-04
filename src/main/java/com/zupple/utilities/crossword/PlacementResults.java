@@ -15,7 +15,6 @@ public class PlacementResults {
     public boolean isSuccess() {
         return success;
     }
-
     public void setSuccess(boolean success) {
         this.success = success;
     }
@@ -23,7 +22,6 @@ public class PlacementResults {
     public int getStartingX() {
         return startingX;
     }
-
     public void setStartingX(int startingX) {
         this.startingX = startingX;
     }
@@ -31,7 +29,6 @@ public class PlacementResults {
     public int getStartingY() {
         return startingY;
     }
-
     public void setStartingY(int startingY) {
         this.startingY = startingY;
     }

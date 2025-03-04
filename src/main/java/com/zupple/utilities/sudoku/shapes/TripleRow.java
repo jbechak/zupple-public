@@ -11,20 +11,6 @@ public class TripleRow {
         this.topRow = topRow;
     }
 
-    public List<Row> getTripleRow() {
-        return tripleRow;
-    }
-
-//    public void printTripleRow() {
-//        for (int i = 0; i < 3; i++) {
-//            getRow(i).printRow();
-//            if (i < 2) {
-//                printHorizontalLine();
-//            }
-//        }
-//        printDoubleHorizontalLine();
-//    }
-
     @Override
     public String toString() {
         String row = "";
@@ -47,37 +33,8 @@ public class TripleRow {
         }
         return line;
     }
-
-//    public void printHorizontalLine() {
-//        for (int i = 0; i < 9; i++) {
-//            System.out.print("----");
-//            if (i == 8) {
-//                System.out.println("-----");
-//            }
-//        }
-//    }
-
-//    public void printDoubleHorizontalLine() {
-//        for (int i = 0; i < 9; i++) {
-//            System.out.print("====");
-//            if (i == 8) {
-//                System.out.println("=====");
-//            }
-//        }
-//    }
-
-    public int getBlock(int x, int y) {
-        Row thisRow = getRow(y);
-        return thisRow.getNum(x);
-
-    }
-
     public Row getRow(int y) {
         return tripleRow.get(y);
-    }
-
-    public int getTopRow() {
-        return topRow;
     }
 
     public void addRow(Row row) {
