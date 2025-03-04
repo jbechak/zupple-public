@@ -1,6 +1,6 @@
 # Zupple
 ### About the code
-I designed the backend for this when I was first learning object oriented programming. It was a great opportunity to implement the concepts that I was learning about, like inheritance, abstraction, and encapsulation. It does use some brute force, but it achieves it's goals of generating 3 types of puzzles. Ahead of me, a project I look forward to is streamlining the code to improve the time complexity. Most recently I've been working on a front end so users can have access to all of the features. I hope you enjoy!
+I designed the backend for this when I was first learning object oriented programming. It was a great opportunity to implement the concepts that I was learning about, like inheritance, abstraction, and encapsulation. It does use some brute force, but it achieves it's goals of generating wordsearch, crossword, and sudoku puzzles. Ahead of me, a project I look forward to is streamlining the code to improve the time complexity. Most recently I've been working on a front end so users can have access to all of the features. I hope you enjoy!
 
 ## View deployed application
 https://zupple-app.netlify.app/
