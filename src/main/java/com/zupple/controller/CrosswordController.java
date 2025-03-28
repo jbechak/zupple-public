@@ -1,7 +1,6 @@
 package com.zupple.controller;
 
-import com.zupple.utilities.crossword.CrosswordBuildingTools;
-import com.zupple.utilities.crossword.CrosswordPuzzle;
+import com.zupple.businessObjects.ICrossword;
 import com.zupple.repository.ICrosswordRepository;
 import com.zupple.dto.CrosswordGenerateDto;
 import com.zupple.dto.CrosswordSaveDto;
@@ -20,7 +19,8 @@ public class CrosswordController {
     @Autowired
     private ICrosswordRepository repository;
 
-    private CrosswordBuildingTools buildingTools = new CrosswordBuildingTools();
+    @Autowired
+    private ICrossword crosswordBO;
 
     @GetMapping()
     public List<CrosswordModel> getAll() {
@@ -40,11 +40,9 @@ public class CrosswordController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/generate")
     public CrosswordModel generateCrossword(@RequestBody CrosswordGenerateDto dto) {
-        var puzzle = new CrosswordPuzzle(dto.getTitle());
-        puzzle.setWordClues(dto.getWordClues());
-        puzzle.populateWordList();
         try {
-            return buildingTools.createGrid(puzzle);
+            var model = crosswordBO.generateCrossword(dto);
+            return model;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, getErrorMessage("generating"), e);
         }

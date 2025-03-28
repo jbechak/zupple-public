@@ -2,7 +2,6 @@ package com.zupple.repository;
 
 import com.zupple.dto.WordSearchSaveDto;
 import com.zupple.model.WordSearchModel;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -125,7 +124,7 @@ public class WordSearchRepository implements IWordSearchRepository {
     }
 
     private WordSearchModel mapRowToWordSearch(SqlRowSet results) {
-        WordSearchModel wordSearch = new WordSearchModel(results.getString("title"));
+        var wordSearch = new WordSearchModel(results.getString("title"));
         wordSearch.setId(results.getInt("id"));
         wordSearch.setUserId(results.getInt("user_id"));
         wordSearch.setDescription(results.getString("description"));

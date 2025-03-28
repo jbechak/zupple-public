@@ -1,10 +1,10 @@
 package com.zupple.controller;
 
+import com.zupple.businessObjects.ISudoku;
 import com.zupple.repository.ISudokuRepository;
 import com.zupple.dto.SudokoGenerateDto;
 import com.zupple.dto.SudokuSaveDto;
 import com.zupple.model.SudokuModel;
-import com.zupple.utilities.sudoku.BlockGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +19,9 @@ public class SudokuController {
 
     @Autowired
     private ISudokuRepository repository;
+
+    @Autowired
+    private ISudoku sudokuBO;
 
     @GetMapping()
     public List<SudokuModel> getAll() {
@@ -39,15 +42,8 @@ public class SudokuController {
     @PostMapping("/generate")
     public SudokuModel generateSudoku(@RequestBody SudokoGenerateDto dto) {
         try {
-            var sudoku = new SudokuModel();
-            int difficulty = dto.getDifficulty();
-            sudoku.setDifficulty(difficulty);
-            sudoku.setShowTitle(dto.getShowTitle());
-            sudoku.setShowDifficulty(dto.getShowDifficulty());
-            var blockGenerator = new BlockGenerator();
-            sudoku.setGridString(blockGenerator.createBoard(difficulty));
-            sudoku.setTitle(dto.getTitle());
-            return sudoku;
+            var model = sudokuBO.generateSudoku(dto);
+            return model;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, getErrorMessage("generating"), e);
         }

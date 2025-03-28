@@ -2,14 +2,21 @@ package com.zupple.model;
 
 public class SudokuModel {
 
+    public SudokuModel() {}
+    public SudokuModel(String title, boolean showTitle, int difficulty, boolean showDifficulty, String gridString) {
+        this.title = title;
+        this.showTitle = showTitle;
+        this.difficulty = difficulty;
+        this.showDifficulty = showDifficulty;
+        this.gridString = gridString;
+    }
     private int id = 0;
     private int userId = 0;
     private String title;
-    private Boolean showTitle;
+    private boolean showTitle;
     private int difficulty;
-    private Boolean showDifficulty;
+    private boolean showDifficulty;
     private String gridString;
-    private String answer;
     private String instructions = "Fill in each blank with the correct numbers so that every column contains the numbers 1 thru 9 " +
             "with no duplicates, every row contains the numbers 1 thru 9 with no duplicates, and every 3x3 box " +
             "contains the numbers 1 thru 9 with no duplicates.";
@@ -28,9 +35,9 @@ public class SudokuModel {
         this.showTitle = showTitle;
     }
 
-    public void createTitle() {
-        title = "Level " + difficulty;
-    }
+//    public void createTitle() {
+//        title = "Level " + difficulty;
+//    }
 
     public int getId() {
         return id;
@@ -74,13 +81,5 @@ public class SudokuModel {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
     }
 }

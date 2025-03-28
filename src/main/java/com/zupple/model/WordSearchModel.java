@@ -1,25 +1,23 @@
 package com.zupple.model;
 
-import com.zupple.utilities.wordsearch.Instructions;
-import com.zupple.puzzleParts.Grid;
-import com.zupple.puzzleParts.WordList;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WordSearchModel {
-
     private String gridString;
     private int id = 0;
     private int userId = 0;
     private String title;
     private int width;
     private int height;
-    private List<String> wordCollection = new ArrayList<>();
+
+    //rename these once the front end is ready
     private List<String> usedWords = new ArrayList<>();
     private List<String> unusedWords = new ArrayList<>();
-    private WordList wordList = new WordList();
+
+    //get rid of this, once the front end is ready
+    private List<String> wordCollection = new ArrayList<>();
     private int wordDirections = 1;
-    private int wordCount;
     private String difficulty;
     private Boolean showDifficulty;
     private String genre = "";
@@ -27,13 +25,36 @@ public class WordSearchModel {
     private String description = "";
     private String creator = "";
 
-    private final int FULL_WIDTH = 81;
 
     public WordSearchModel(String title) {
         this.title = title;
     }
 
-    public WordSearchModel() {}
+    public WordSearchModel(
+            String title,
+            int width,
+            int height,
+            int wordDirections,
+            List<String> usedWords,
+            List<String> unusedWords,
+            String gridString,
+            String difficulty,
+            boolean showDifficulty,
+            String instructions,
+            List<String> wordCollection
+    ) {
+        this.title = title;
+        this.width = width;
+        this.height = height;
+        this.wordDirections = wordDirections;
+        this.usedWords = usedWords;
+        this.unusedWords = unusedWords;
+        this.gridString = gridString;
+        this.difficulty = difficulty;
+        this.showDifficulty = showDifficulty;
+        this.instructions = instructions;
+        this.wordCollection = wordCollection;
+    }
 
     public int getId() {
         return id;
@@ -67,13 +88,6 @@ public class WordSearchModel {
     public void setGridString(String gridString) { this.gridString = gridString; }
     public String getGridString() { return gridString; }
 
-    public List<String> getWordCollection() {
-        return wordCollection;
-    }
-    public void setWordCollection(List<String> wordCollection) {
-        this.wordCollection = wordCollection;
-    }
-
     public List<String> getUnusedWords() {
         return unusedWords;
     }
@@ -88,14 +102,11 @@ public class WordSearchModel {
         this.usedWords = usedWords;
     }
 
-    public void populateWordList(List<String> wordCollection) {
-        wordList.populateFromStringList(wordCollection);
+    public List<String> getWordCollection() {
+        return wordCollection;
     }
-    public void setWordList(WordList wordList) {
-        this.wordList = wordList;
-    }
-    public WordList getWordList() {
-        return wordList;
+    public void setWordCollection(List<String> wordCollection) {
+        this.wordCollection = wordCollection;
     }
 
     public String getTitle() {
@@ -109,37 +120,10 @@ public class WordSearchModel {
         this.description = description;
     }
 
-    public void setDifficulty(Grid grid) {
-        if (getCredits(grid) >= 8) {
-            this.difficulty = "Level 5 - Very Difficult";
-        }
-        else if (getCredits(grid) >= 6) {
-            this.difficulty = "Level 4 - Difficult";
-        }
-        else if (getCredits(grid) >= 3) {
-            this.difficulty = "Level 3 - Medium";
-        }
-        else if (getCredits(grid) >= 1) {
-            this.difficulty = "Level 2 - Easy";
-        }
-        else this.difficulty = "Level 1 - Very Easy";
-    }
-
-    private int getCredits(Grid grid) {
-        int credits = 0;
-        credits += grid.remainingSpaces() / 50;
-        credits += wordDirections * 2 - 2;
-        credits += (wordCount - 1) / 10;
-        return credits;
-    }
-
     public String getDifficulty() {
         return this.difficulty;
     }
 
-    public void setWordCount(int wordCount) {
-        this.wordCount = wordCount;
-    }
 
     public int getWidth() {
         return width;
@@ -165,11 +149,6 @@ public class WordSearchModel {
     public String getInstructions() {
         return instructions;
     }
-
-    public void createInstructions() {
-        this.instructions = new Instructions().getStandard(wordDirections);
-    }
-
     public void setInstructions(String instructions) {
         this.instructions = instructions;
     }

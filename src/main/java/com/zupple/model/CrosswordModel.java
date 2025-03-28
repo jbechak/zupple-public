@@ -19,7 +19,6 @@ public class CrosswordModel {
     private String genre = "";
     private String instructions = "For each clue, find the word in the puzzle that it is referring to.";
     private String description = "";
-    private String gridPath = "";
 
     public CrosswordModel() {
     }
@@ -28,8 +27,26 @@ public class CrosswordModel {
         this.title = title;
     }
 
-    public String getGridPath() {
-        return gridPath;
+    public CrosswordModel(
+        String title,
+        int width,
+        int height,
+        Map<String, String> wordClues,
+        Map<String, String> usedWordClues,
+        Map<String, String> unusedWordClues,
+        String gridString,
+        List<String> downClueList,
+        List<String> acrossClueList
+    ) {
+        this.title = title;
+        this.width = width;
+        this.height = height;
+        this.wordClues = wordClues;
+        this.usedWordClues = usedWordClues;
+        this.unusedWordClues = unusedWordClues;
+        this.gridString = gridString;
+        this.downClueList = downClueList;
+        this.acrossClueList = acrossClueList;
     }
 
     public int getId() {
