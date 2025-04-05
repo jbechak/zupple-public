@@ -1,9 +1,9 @@
 # Zupple
+## Deployed application link
+https://zupple-app.netlify.app/
+
 ### Background
 I designed the backend for this application when I was first learning object oriented programming. It was a great opportunity to try to formulate my own algorithms to create different types of puzzles. Most recently, I've been working on a front end, so users can have access to all of the features. I hope you enjoy!
-
-## View deployed application
-https://zupple-app.netlify.app/
 
 ## User Instructions
 Zupple has 3 modes: Wordsearch, Crossword, and Sudoku. In each mode, users can generate puzzles and view them. Logged in users can edit, save, and print puzzles as well. To get started in any of the 3 modes, optionally log in, and then click the mode from the menu bar in the top left area of the browser window. All 3 modes have 3 tabs: Puzzle List, Edit, and View/Save.
