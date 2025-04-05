@@ -2,7 +2,7 @@
 ## Deployed application link
 https://zupple-app.netlify.app/
 
-### Background
+## Background
 I designed the backend for this application when I was first learning object oriented programming. It was a great opportunity to try to formulate my own algorithms to create different types of puzzles. Most recently, I've been working on a front end, so users can have access to all of the features. I hope you enjoy!
 
 ## User Instructions
